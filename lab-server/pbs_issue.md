@@ -31,7 +31,7 @@ pbs系统报错主要集中于read_tcp_reply, mom_server_update_stat, send_updat
 
 4. 问题解决
 
-对pbs(Torque)系统相关文档进行查阅后发现，管理端对应pbs_server服务，运算端对应pbs_mom服务，调度则对应pbs_sched服务，故而在不同节点上运行相应服务以完成系统配置，**即可解决问题**。
+对pbs(Torque)系统相关文档(五舟-作业调度系统)进行查阅后发现，管理端对应pbs_server服务，运算端对应pbs_mom服务，调度则对应pbs_sched服务，故而在不同节点上运行相应服务以完成系统配置，**即可解决问题**。
 
 ```
 # for master node
