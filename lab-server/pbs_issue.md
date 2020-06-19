@@ -13,13 +13,13 @@
 
 2. 问题分析
 
-pbs系统报错主要集中于read_tcp_reply、mom_server_update_stat、send_update_to_a_server这三类错误中，有理由推测，故障原因在于它想同步多个节点上的pbs日志信息，但因为网络问题无法同步，多次尝试也失败，陷入死循环进而导致宕机。
+pbs系统报错主要集中于read_tcp_reply, mom_server_update_stat, send_update_to_a_server这三类错误中，有理由推测，故障原因在于它想同步多个节点上的pbs日志信息，但因为网络问题无法同步，多次尝试也失败，陷入死循环进而导致宕机。
 
 3. 问题搜索
 
     1. [torque-6.1.2 安装问题，子节点down状态如何启动](http://muchong.com/html/201810/12721088.html)
 
-    主要集中于torque系统初始启动问题，但本次问题出现在运行过程中，排除。
+    主要集中于torque系统初始启动问题，但本次问题出现在运行过程中，**排除**。
 
     2. [pbs_mom networking split into multiple IPs](https://github.com/adaptivecomputing/torque/issues/220)
 
@@ -28,6 +28,20 @@ pbs系统报错主要集中于read_tcp_reply、mom_server_update_stat、send_upd
     3. [Error message when running jobs using torque. read_tcp_reply, Mismatching protocols. Expected protocol 4 but read reply for 0](https://stackoverflow.com/questions/40995829/error-message-when-running-jobs-using-torque-read-tcp-reply-mismatching-protoc)
 
     问题还可能在于缺少mom_hierarchy文件上，该问题中通过创建mom_hierarchy文件完成修复，但我倾向于是网络端口问题
+
+4. 问题解决
+
+对pbs(Torque)系统相关文档进行查阅后发现，管理端对应pbs_server服务，运算端对应pbs_mom服务，调度则对应pbs_sched服务，故而在不同节点上运行相应服务以完成系统配置，**即可解决问题**。
+
+```
+# for master node
+# pbs_sched service cannot be initialized, returned "LOG_ERROR::Address already in use (98)"
+for i in pbs_server pbs_sched trqauthd; do service $i restart; done
+for i in pbs_server pbs_sched trqauthd; do service $i status; done
+# for slave node
+for i in pbs_mom trqauthd; do service $i restart; done
+for i in pbs_mom trqauthd; do service $i status; done
+```
 
 # 问题二
 
