@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 import psutil
-import datetime
-from xlrd import open_workbook
-from xlutils.copy import copy
 import time
 import os
 import pandas as pd
