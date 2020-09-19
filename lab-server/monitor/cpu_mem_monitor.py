@@ -13,9 +13,9 @@ def cpu_mem_monitor():
     mem = psutil.virtual_memory()  # 查看内存信息:(total,available,percent,used,free)
     mem_per = int(mem[2])
     # 执行相关操作
-    if cpu_per > 50:
+    if cpu_per >= 50:
         terminate_notify("cpu")
-    if mem_per > 50:
+    if mem_per >= 50:
         terminate_notify("mem")
 
 def terminate_notify(error_type):
@@ -34,11 +34,11 @@ def terminate_notify(error_type):
 def send_wechat_notify(sys_info_df):
     # 直接调用Server酱服务进行微信推送
     # Server酱URL
-    url = 'SCU46870Teff161add8ab0bbbbb1739e61bde143e5df5030cdac90'
+    url = 'https://sc.ftqq.com/SCU46870Teff161add8ab0bbbbb1739e61bde143e5df5030cdac90.send'
     d = {'text':"Warning: master节点资源异常信息",
          'desp':f"{sys_info_df.USER[0]}用户在master上运行相关程序，CPU或内存已达最大负载的50%，现已将相关任务{sys_info_df.COMMAND[0]}关闭！请及时提醒相关人员"}
     requests.post(url, data = d)
-
+# 暂不考虑
 def send_email(info):
     sender = '***@qq.com'
     recevier = '***@qq.com'
