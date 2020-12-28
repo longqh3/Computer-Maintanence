@@ -31,3 +31,15 @@
     1. 根据pid直接终止相应任务
 
     2. 修改该任务执行文件夹`/usr/local/MegaRAID Storage Manager`的文件名为`/usr/local/MegaRAID_Storage_Manager_bak`避免再次自启动
+
+    # 进一步排查
+
+    1. 开机无法进入图形化管理界面原因（报错提示）
+
+        * Starting ctdbd service \[FAILED\]
+
+            问题未找到相应解决方案，ctdbd参考安装链接为[CentOS7下源码安装CTDB并尝试使用](https://blog.csdn.net/dandanfengyun/article/details/104971908)
+
+        * :cbl runuser: user cbl does not exist
+
+            问题可能在于VNC的配置信息上，将不应该再出现的`cbl`用户纳入进来，等待超哥解决- -
