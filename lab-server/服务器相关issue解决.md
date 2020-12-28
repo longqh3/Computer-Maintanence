@@ -30,7 +30,7 @@
 
     1. 根据pid直接终止相应任务
 
-    2. 修改该任务执行文件夹`/usr/local/MegaRAID Storage Manager`的文件名为`/usr/local/MegaRAID_Storage_Manager_bak`避免再次自启动
+    2. 修改该任务执行文件夹`/usr/local/MegaRAID Storage Manager`的文件名为`/usr/local/MegaRAID_Storage_Manager_bak`避免再次自启动——重启后**问题未出现（解决）**
 
     # 进一步排查
 
