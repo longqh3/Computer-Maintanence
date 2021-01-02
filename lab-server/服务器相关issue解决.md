@@ -42,33 +42,43 @@
 
         * :cbl runuser: user cbl does not exist
 
-            问题可能在于VNC的配置信息上，将不应该再出现的`cbl`用户纳入进来，等待超哥解决- -
+            问题可能在于VNC的配置信息上，将不应该再出现的`cbl`用户纳入进来，等待超哥解决- -已解决，将vnc启动相关设置关闭即可
 
 # 存储相关
 
 ## 相应存储节点掉线
 
-1. 问题描述
+1. 2020.12.30
 
-    Jupyter Notebook掉线，且ssh进入gpu01节点时，提示`Could not chdir to home directory /home/lqh: No such file or directory`
+    1. 问题描述
 
-2. 问题排查
+        Jupyter Notebook掉线，且ssh进入gpu01节点时，提示`Could not chdir to home directory /home/lqh: No such file or directory`
 
-    * 原因分析
+    2. 问题排查
 
-        * home文件夹所在的存储器掉线
+        * 原因分析
 
-            进入`/etc/rc.local`文件内，重新挂载上相应存储器，命令如下：
+            * home文件夹所在的存储器掉线
 
-            ```
-            mount -t glusterfs 120.1.1.11:/wz01 /public1
-            mount -t glusterfs 120.1.1.13:wz02-single /public2
-            mount -o bind /public2/home /home
-            ```
+                进入`/etc/rc.local`文件内，重新挂载上相应存储器，命令如下：
 
-            执行命令后，提示挂载失败，报错均为`/usr/sbin/glusterfs: symbol lookup error: /usr/sbin/glusterfs: undefined symbol: gf_latency_toggle`
+                ```
+                mount -t glusterfs 120.1.1.11:/wz01 /public1
+                mount -t glusterfs 120.1.1.13:wz02-single /public2
+                mount -o bind /public2/home /home
+                ```
 
-            事实上，即使直接启动`glusterfsd -V`来检查软件状态，仍报错`glusterfsd: symbol lookup error: glusterfsd: undefined symbol: gf_latency_toggle`。
+                执行命令后，提示挂载失败，报错均为`/usr/sbin/glusterfs: symbol lookup error: /usr/sbin/glusterfs: undefined symbol: gf_latency_toggle`
+
+                事实上，即使直接启动`glusterfsd -V`来检查软件状态，仍报错`glusterfsd: symbol lookup error: glusterfsd: undefined symbol: gf_latency_toggle`，因而定位问题应该在于glusterfsd客户端的启动问题（其他节点可正常挂载对应存储服务器）
+            
+            * 软件检查
+
+                `rpm -qa | grep gluster`检查已安装的glusterf相关包，发现存在6.0和3.12版本共存的问题（glusterfs的客户端所有版本都必须一致才可以正常运行，正常的话客户端的gluster版本比服务端的高就可以，不能比服务端的低），`rpm -e 包名`卸载所有6.0版本相关包，重启后**仍未解决**
+
+                ![gluster版本检查](gluster_software_versions.png)
+
+                以*可正常运行*为原则，根据其他节点中可正常运行的gluster相关软件包信息`rpm -qa | grep gluster`，下载4个对应的rpm包进行手动安装（存放于`/root/Downloads/glusterfs`），安装过程中提示需要编译安装`librocksdb`，但过于麻烦，暂不予理会，直接强制安装`rpm -Uvh *.rpm --nodeps`，**问题解决**
 
 # 软件相关
 
