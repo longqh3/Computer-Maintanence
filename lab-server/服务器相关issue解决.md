@@ -69,4 +69,33 @@
             执行命令后，提示挂载失败，报错均为`/usr/sbin/glusterfs: symbol lookup error: /usr/sbin/glusterfs: undefined symbol: gf_latency_toggle`
 
             事实上，即使直接启动`glusterfsd -V`来检查软件状态，仍报错`glusterfsd: symbol lookup error: glusterfsd: undefined symbol: gf_latency_toggle`。
-            
+
+# 软件相关
+
+## JupyterHub相关问题
+
+1. 2019.9.30：tornado包出现问题，版本过高导致jupyter无法正常运行，指定版本为4.5.3后正常运行`pip install tornado==4.5.3`
+
+2. 2019.10.27（解决时间：4h）：由于希望能够重装nvidia驱动，重启系统，发现jupyterhub崩了
+	
+    * 运行jupyterhub -h后，报错ImportError: cannot import name 'secure_write'：运行pip install --upgrade jupyter_client后解决，来自
+	
+    * 继续尝试运行jupyterhub，可以进入用户界面，似乎可以了，但此时进入ipynb文件后，发现无法创建kernel，界面内报错为`traitlets.traitlets.TraitError: The 'loop' trait of an IOLoopKernelManager instance must be a ZMQIOLoop traitlets.traitlets.TraitError: The 'loop' trait of an IOLoopKernelManager instance must be a ZMQIOLoop`，经过查询
+        
+        * 结果一，大部分人认为是Tornado的版本问题，Tornado太新（>5.0）而jupyter版本过旧，于是运行pip install "tornado<5.0"，将tornado降级至4.5.3版本，未解决，甚至出现新问题
+		
+        * 直接无法进入用户的文件页面，而是在spawn页面直接停了，命令行提示信息为`jupyterhub ERROR:asyncio:Task exception was never retrieved`，这里经过查询发现，是tornado版本太低了导致创建出错
+		
+        * Tornado版本太高也不行，太低也不行，这里有两种思路解决
+			
+            * tornado版本降低的话，相应的jupyter依赖包也要进行降级以满足其需求，此处我们可以找到github上的人贴出来的解决成功后的案例一、案例二python包安装版本，根据他们的成功案例依次安装对应版本的包(此处并不行，可能是由于其他包都太新了)
+
+    * tornado版本太低连进去都无法进去，所以这里还是不考虑降级tornado，而是保留最新版本的tornado，从其他方面解决，这里我们选择更新notebook，之前没注意到的是，由于tornado版本冲突，jupyter 5.7.5版本以下并不支持tornado6.0，但jupyter notebook 5.7.5版本已经修复该bug，于是升级jupyter notebook到5.7.5以上，运行 `pip install jupyter notebook==5.7.5`，问题解决
+
+3. 2020.12.30：gpu服务器的存储系统突然出现问题（挂载失败），修复完成后jupyterhub无法启动
+
+    * 重新应用pip安装jupyterhub，但是提示`Fatal Python error: initsite: Failed to import the site module `，就很迷惑，甚至还一度出现了pip无法安装包，报错`ModuleNotFoundError: No module named 'pip._internal' with python source code installation`的插曲（修复方式：[StackOverflow链接](https://stackoverflow.com/questions/56361133/how-to-fix-modulenotfounderror-no-module-named-pip-internal-with-python-sour)）
+
+    * 再尝试应用conda安装jupyterhub（因其可自动选择最合适的依赖项），结果发现启动不了？？经检查才发现是pip安装的jupyterhub未卸载，完全卸载conda、pip版本再安装后即可
+
+    * 最后运行jupyterhub时，提示无法打开单人的notebook，此时应采取的策略为——**根据报错相关提示直接在本人终端下运行相应出错的py文件，得到详细报错后再进行解决**（附注，解决完成后应重启root终端，避免重复报错的问题）
