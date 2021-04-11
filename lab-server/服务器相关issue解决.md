@@ -80,6 +80,37 @@
 
                 以*可正常运行*为原则，根据其他节点中可正常运行的gluster相关软件包信息`rpm -qa | grep gluster`，下载4个对应的rpm包进行手动安装（存放于`/root/Downloads/glusterfs`），安装过程中提示需要编译安装`librocksdb`，但过于麻烦，暂不予理会，直接强制安装`rpm -Uvh *.rpm --nodeps`，**问题解决**
 
+2. 2021.04.11
+
+    1. 问题描述
+
+        各个用户文件夹内文件(/home/xxx)均出现了不同程度的丢失情况，导致出现各种报错问题
+    
+    2. 问题排查
+
+        * 原因分析
+
+            * 进入glusterfs文件管理系统的日志目录`/var/log/glusterfs`检查相应日志信息，发现报错可总结为如下部分：
+
+                ![glusterfs主要报错](glusterfs_software_main_error.png)
+            
+                核心报错如下所示：
+
+                ```
+                [2021-04-10 16:13:01.921641] W [MSGID: 114031] [client-rpc-fops.c:2203:client3_3_seek_cbk] 0-wz02-single-client-0: remote operation failed [No such file or directory]
+                [2021-04-10 19:17:58.945921] I [MSGID: 109092] [dht-layout.c:807:dht_layout_dir_mismatch] 0-wz02-single-dht: /: Disk layout missing, gfid = 00000000-0000-0000-0000-000000000001
+                [2021-04-10 19:17:58.945982] I [MSGID: 109018] [dht-common.c:1100:dht_revalidate_cbk] 0-wz02-single-dht: Mismatching layouts for /, gfid = 00000000-0000-0000-0000-000000000001
+                [2021-04-10 19:17:58.946589] W [MSGID: 114031] [client-rpc-fops.c:2928:client3_3_lookup_cbk] 0-wz02-single-client-1: remote operation failed. Path: / (00000000-0000-0000-0000-000000000001) [Input/output error]
+                [2021-04-10 19:17:58.947089] W [MSGID: 114031] [client-rpc-fops.c:2928:client3_3_lookup_cbk] 0-wz02-single-client-0: remote operation failed. Path: / (00000000-0000-0000-0000-000000000001) [Input/output error]
+                [2021-04-10 19:17:58.947149] I [MSGID: 109063] [dht-layout.c:713:dht_layout_normalize] 0-wz02-single-dht: Found anomalies in / (gfid = 00000000-0000-0000-0000-000000000001). Holes=1 overlaps=0
+                [2021-04-10 19:17:58.947169] W [MSGID: 109005] [dht-selfheal.c:2117:dht_selfheal_directory] 0-wz02-single-dht: Directory selfheal failed : 2 subvolumes have unrecoverable errors. path = /, gfid =
+                [2021-04-10 19:17:58.947418] W [MSGID: 114031] [client-rpc-fops.c:2928:client3_3_lookup_cbk] 0-wz02-single-client-0: remote operation failed. Path: / (00000000-0000-0000-0000-000000000001) [Input/output error]
+                [2021-04-10 19:17:58.947441] I [MSGID: 109063] [dht-layout.c:713:dht_layout_normalize] 0-wz02-single-dht: Found anomalies in / (gfid = 00000000-0000-0000-0000-000000000001). Holes=1 overlaps=0
+                [2021-04-10 19:17:58.947482] W [MSGID: 109005] [dht-selfheal.c:2117:dht_selfheal_directory] 0-wz02-single-dht: Directory selfheal failed : 2 subvolumes have unrecoverable errors. path = /, gfid =
+                [2021-04-10 19:17:58.947891] W [MSGID: 114031] [client-rpc-fops.c:503:client3_3_stat_cbk] 0-wz02-single-client-1: remote operation failed [Input/output error]
+                [2021-04-10 19:17:58.948216] W [MSGID: 114031] [client-rpc-fops.c:503:client3_3_stat_cbk] 0-wz02-single-client-0: remote operation failed [Input/output error]
+                ```
+
 # 软件相关
 
 ## JupyterHub相关问题
