@@ -110,6 +110,13 @@
                 [2021-04-10 19:17:58.947891] W [MSGID: 114031] [client-rpc-fops.c:503:client3_3_stat_cbk] 0-wz02-single-client-1: remote operation failed [Input/output error]
                 [2021-04-10 19:17:58.948216] W [MSGID: 114031] [client-rpc-fops.c:503:client3_3_stat_cbk] 0-wz02-single-client-0: remote operation failed [Input/output error]
                 ```
+            
+            * 检查相应节点系统后，发现数个bricks系统宕机，报错信息如下所示：
+
+                ![glusterfs bricks信息](glusterfs_bricks_error.png)
+    3. 解决方案
+
+        * 重启`120.1.1.13`节点——**问题解决**
 
 # 软件相关
 
