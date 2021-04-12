@@ -113,10 +113,15 @@
             
             * 检查相应节点系统后，发现数个bricks系统宕机，报错信息如下所示：
 
+                ```
+                ssh 10.1.1.11 # 远程连接存储服务器public1 (public1为11后缀，public2为13后缀)，需要都检查
+                gluster v status # 检查gluster服务状态
+                ```
+
                 ![glusterfs bricks信息](glusterfs_bricks_error.png)
     3. 解决方案
 
-        * 重启`120.1.1.13`节点——**问题解决**
+        * 重启`120.1.1.13`节点——`shutdown -r now`——**问题解决**
 
 # 软件相关
 
