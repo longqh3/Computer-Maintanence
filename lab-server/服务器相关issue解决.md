@@ -123,6 +123,17 @@
 
         * 重启`120.1.1.13`节点——`shutdown -r now`——**问题解决**
 
+        * 同时检查各个计算节点的挂载情况
+
+        * **可能**存在部分节点（如pan02节点）**无法自动挂载**存储节点的情况
+
+            ```
+            ssh pan02
+            unmount -lf 120.1.1.13:wz02-single # 强制解挂存储节点（存在常规解挂失效的情况）
+            mount -t glusterfs 120.1.1.13:wz02-single /public2 # 再进行常规挂载
+            mount -o bind /public2/home /home
+            ```
+
 # 软件相关
 
 ## JupyterHub相关问题
