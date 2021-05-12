@@ -131,7 +131,7 @@
 
             ```
             ssh pan02
-            unmount -lf 120.1.1.13:wz02-single # 强制解挂存储节点（存在常规解挂失效的情况）
+            umount -lf 120.1.1.13:wz02-single # 强制解挂存储节点（存在常规解挂失效的情况）
             mount -t glusterfs 120.1.1.13:wz02-single /public2 # 再进行常规挂载
             mount -o bind /public2/home /home
             ```
