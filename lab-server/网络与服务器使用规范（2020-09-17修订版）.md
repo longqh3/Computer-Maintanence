@@ -19,7 +19,7 @@ GPU计算节点|gpu01|20核+128G+3*Nvidia显卡
 
 ### 2.1 PBS简介
 
-作为集群系统软件的重要组成部分，集群作业管理系统可以统一管理和调度集群的软硬件资源，保证用户作业公平合理地共享集群资源，提高系统利用率和吞吐率。常用的集群作业管理系统：PBS（Portable Batch System），LSF 和 SLURM，其中PBS主要包括openPBS, PBS Pro和Torque三种分支。本机采用了PBS系统Torque版本。[PBS使用指南](http://web.pmglab.com/oa/server/2019-10-13/wuzhou.pdf)
+作为集群系统软件的重要组成部分，集群作业管理系统可以统一管理和调度集群的软硬件资源，保证用户作业公平合理地共享集群资源，提高系统利用率和吞吐率。常用的集群作业管理系统：PBS（Portable Batch System），LSF 和 SLURM，其中PBS主要包括openPBS, PBS Pro和Torque三种分支。本机采用了PBS系统Torque版本。[PBS使用指南](http://web.pmglab.top/oa/server/2019-10-13/wuzhou.pdf)
 
 ### 2.2 PBS简单使用示例
 
