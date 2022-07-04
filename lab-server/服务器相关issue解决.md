@@ -136,6 +136,45 @@
             mount -o bind /public2/home /home
             ```
 
+            ```
+            umount -lf 120.1.1.12:/wz01 # 强制解挂存储节点
+            mount -t glusterfs 120.1.1.12:/wz01 /public1 # 挂载public1文件夹
+            ```
+
+1. 2022.03.18
+
+    1. 问题描述：home文件夹又双叒掉了- -
+
+    2. 问题分析：
+
+        `gluster v status`检查bricks状态，发现同样是掉了4个bricks
+
+        `lsblk`检查brick挂载状态，发现是硬盘阵列柜中的4个bricks根本没有挂载上- -
+
+        ![lsblk bricks信息](lsblk_output.jpg)
+    
+    3. 问题解决
+
+        1. 尝试
+
+            `service glusterd restart`重启glusterd服务，提示信息如下（3块brick顺利挂载，另外5块brick仍出现问题）
+
+            ```
+            [2022-03-18 03:34:11.472208] I [socket.c:2415:socket_event_handler] 0-transport: EPOLLERR - disconnecting now
+            [2022-03-18 03:34:11.472548] I [MSGID: 106005] [glusterd-handler.c:5694:__glusterd_brick_rpc_notify] 0-management: Brick 120.1.1.13:/data/0f41e8bc-7bf4-4530-920a-98141826f579/8c66a7a8-086f-11e9-ba0e-ac1f6b19c332/brick has disconnected from glusterd.
+            [2022-03-18 03:34:11.472973] I [socket.c:2415:socket_event_handler] 0-transport: EPOLLERR - disconnecting now
+            [2022-03-18 03:34:11.473305] I [MSGID: 106005] [glusterd-handler.c:5694:__glusterd_brick_rpc_notify] 0-management: Brick 120.1.1.13:/data/a12e3bcb-cb13-4ae7-afed-a8bb58418712/8c66a7a8-086f-11e9-ba0e-ac1f6b19c332/brick has disconnected from glusterd.
+            [2022-03-18 03:34:11.473709] I [socket.c:2415:socket_event_handler] 0-transport: EPOLLERR - disconnecting now
+            [2022-03-18 03:34:11.474040] I [MSGID: 106005] [glusterd-handler.c:5694:__glusterd_brick_rpc_notify] 0-management: Brick 120.1.1.13:/data/2e553b21-b5e1-47c0-ae0e-dc80cf54e9de/8c66a7a8-086f-11e9-ba0e-ac1f6b19c332/brick has disconnected from glusterd.
+            [2022-03-18 03:34:11.474456] I [socket.c:2415:socket_event_handler] 0-transport: EPOLLERR - disconnecting now
+            [2022-03-18 03:34:11.474778] I [MSGID: 106005] [glusterd-handler.c:5694:__glusterd_brick_rpc_notify] 0-management: Brick 120.1.1.13:/data/c34b8235-f354-4d01-9639-53b3102e94ef/8c66a7a8-086f-11e9-ba0e-ac1f6b19c332/brick has disconnected from glusterd.
+            [2022-03-18 03:34:11.475185] I [socket.c:2415:socket_event_handler] 0-transport: EPOLLERR - disconnecting now
+            [2022-03-18 03:34:11.475509] I [MSGID: 106005] [glusterd-handler.c:5694:__glusterd_brick_rpc_notify] 0-management: Brick 120.1.1.13:/data/c2926353-227b-4ff2-9e85-b7e52c2e23c8/8c66a7a8-086f-11e9-ba0e-ac1f6b19c332/brick has disconnected from glusterd.
+            [2022-03-18 03:34:17.091513] I [MSGID: 106143] [glusterd-pmap.c:277:pmap_registry_bind] 0-pmap: adding brick /data/bb71a535-228b-4dae-8e6e-781b8b099296/8c66a7a8-086f-11e9-ba0e-ac1f6b19c332/brick on port 49152
+            [2022-03-18 03:34:17.104488] I [MSGID: 106143] [glusterd-pmap.c:277:pmap_registry_bind] 0-pmap: adding brick /data/7b675b1c-b8f3-4294-9cd2-1c006968b529/8c66a7a8-086f-11e9-ba0e-ac1f6b19c332/brick on port 49153
+            [2022-03-18 03:34:17.114847] I [MSGID: 106143] [glusterd-pmap.c:277:pmap_registry_bind] 0-pmap: adding brick /data/a9f116b3-70cb-4d5a-b5f1-3911315f378f/8c66a7a8-086f-11e9-ba0e-ac1f6b19c332/brick on port 49154
+            ```
+
 # 软件相关
 
 ## Centos系统相关问题
